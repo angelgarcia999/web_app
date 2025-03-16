@@ -1,0 +1,26 @@
+name: Web App Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build-web-app:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Build the Docker Image
+      run: docker build -t web_app .
+
+    - name: Run the Web App Container
+      run: docker run -d -p 80:80 --name web_app_container web_app
+
+    - name: Verify Running Containers
+      run: docker ps -a
