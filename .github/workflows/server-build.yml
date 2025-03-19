@@ -36,3 +36,19 @@ jobs:
 
     - name: Docker Push
       run: docker push ${{ secrets.DOCKER_USER }}/web_app
+
+    - name: Authenticate with Google Cloud
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: ${{ secrets.GC_CREDENTIALS }}
+
+    - name: Configure Docker for Google Cloud
+      run: gcloud auth configure-docker
+
+    - name: Deploy to Google Cloud Run
+      run: |
+        gcloud run deploy ${{ secrets.GCP_APP }} \
+          --image=docker.io/${{ secrets.DOCKER_USER }}/web_app \
+          --platform=managed \
+          --region=us-central1 \
+          --allow-unauthenticated
