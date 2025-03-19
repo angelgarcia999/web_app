@@ -34,20 +34,20 @@ jobs:
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: docker login -u "$DOCKER_USER" -p "$DOCKER_PASSWORD"
 
-    - name: Tag Docker Image
-      run: docker tag ${{ secrets.DOCKER_USER }}/web_app gcr.io/${{ secrets.GCP_PROJECT }}/web_app
-
-    - name: Docker Push
-      run: docker push gcr.io/${{ secrets.GCP_PROJECT }}/web_app
-
     - name: Authenticate with Google Cloud
       uses: google-github-actions/auth@v1
       with:
         credentials_json: ${{ secrets.GC_CREDENTIALS }}
 
     - name: Configure Docker for Google Cloud
-      run: gcloud auth configure-docker
+      run: gcloud auth configure-docker --quiet
 
+    - name: Tag Docker Image
+      run: docker tag ${{ secrets.DOCKER_USER }}/web_app gcr.io/${{ secrets.GCP_PROJECT }}/web_app
+
+    - name: Push Docker Image to GCR
+      run: docker push gcr.io/${{ secrets.GCP_PROJECT }}/web_app
+      
     - name: Deploy to Google Cloud Run
       run: |
         gcloud run deploy ${{ secrets.GCP_APP }} \
