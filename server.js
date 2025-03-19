@@ -4,7 +4,7 @@ const PORT = process.env.PORT || 80;
 
 app.get('/', (req, res) => {
     const obj = {
-        "message": "My name is Angel Garcia",
+        "message": "My name is Angel",
         "timestamp": Date.now(),
         "hello": "Hello World"
     };
